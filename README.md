@@ -1,0 +1,9 @@
+# Olithen
+
+This project uses:
+	1. **30log**: https://github.com/Yonaba/30log 
+
+_Copyright 2019-2021 Zolithen
+Licensed under the MIT license https://opensource.org/licenses/MIT_
+
+Olithen is a set of modules made for Stunenca that aims to 
