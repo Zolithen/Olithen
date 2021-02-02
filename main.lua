@@ -18,54 +18,24 @@ function sk_getc_width(a)
 	return skfont:getWidth(a);
 end
 
-require "utility/Switch"
-require "utility/Timer"
-require "utility/RelativePosition"
-require "gui/GuiElement"
-require "gui/Window"
-require "gui/Label"
-require "gui/TextInput"
-require "gui/Button"
+require "gui/Gui"
 
 lk = love.keyboard
 
 local scene = Node(nil, "scene", 0, 0)
 
-function math.pboverlapraw(x1, y1, x2, y2, w, h) 
-  return (
-    (x1 > x2) and
-    (x1 < x2 + w) and
-    (y1 > y2) and
-    (y1 < y2 + h)
-  )
-end
-
-function is_hovered(...)
-  return math.pboverlapraw(
-      love.mouse.getX(), love.mouse.getY(),
-      ...
-    )
-end
-
-function is_hovered_raw(x, y, ...)
-  return math.pboverlapraw(
-      x, y,
-      ...
-    )
-end
-
 winc = WindowController(scene);
-m = Window(winc, "Main Menu"):setPos(0, 0):setDimensions(300, 500);
+--[[m = Window(winc, "Main Menu"):setPos(0, 0):setDimensions(300, 500);
 m.expandable = false;
-m.closable = false;
+m.closable = false;]]
 
-Button(m, "new_project"):setPos(0, 0.9):setText("New Project"):onClick(function(self)
+--[[Button(m, "new_project"):setPos(0, 0.9):setText("New Project"):onClick(function(self)
 	local newp = Window(winc, "Untitled")
 end)
 
 Button(m, "bu1"):setPos(0, 0.5):setText("Open Window"):onClick(function(self)
 	
-end)
+end)]]
 --Label(m, "labT", 0, 0, "Saved");
 
 function love.load()

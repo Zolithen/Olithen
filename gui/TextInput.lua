@@ -31,8 +31,8 @@ end
 
 function TextInput:draw()
 	-- Setup the stencil
-	self:stencil();
-    love.graphics.setStencilTest("greater", 0);
+	--self:stencil();
+    --love.graphics.setStencilTest("greater", 0);
 
 		if self.focus then
 			sk_set_color("highlight");
@@ -47,13 +47,13 @@ function TextInput:draw()
 		);
 	
 		sk_set_color("font");
-		love.graphics.draw(self.render_text, self.x+self:get_offset(), self.y);
+		if OLITHEN_GUI.is_inside_stencil(self.x+1, self.y+1) then
+			love.graphics.draw(self.render_text, self.x+self:get_offset(), self.y);
+		end
 
 		if -self.cursor_switch and self.focus then
 			love.graphics.rectangle("fill", self.x+sk_getc_width(self:get_text(self.cursor-1))+self:get_offset(), self.y, 3, 16);
 		end
-
-	--love.graphics.setStencilTest();
 end
 
 function TextInput:get_offset()
@@ -125,6 +125,8 @@ end
 function TextInput:update_pos()
 	self.x, self.y = self.pos:get_pixel_space(self.parent.w, self.parent.h);
 end
+
+TextInput.full_box = TextInput.main_box
 
 ------------------------------------
 -- API FUNCTIONS

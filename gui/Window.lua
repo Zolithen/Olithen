@@ -27,8 +27,14 @@ end
 
 function WindowController:is_on_window(x, y)
 	for i, v in ipairs(self.children) do
-		if is_hovered_raw(x, y, v:full_box()) then
-			return i;
+		if v.minimized then
+			if is_hovered_raw(x, y, v:title_box()) then
+				return i;
+			end
+		else
+			if is_hovered_raw(x, y, v:full_box()) then
+				return i;
+			end
 		end
 	end
 	return -1;
@@ -41,7 +47,7 @@ function Window:init(parent, name)
 
 	-- window state
 	self.focus = false;
-	self.inner_canvas = love.graphics.newCanvas(1920, 1080);
+	self.inner_canvas = love.graphics.newCanvas(1920, 1080); -- TODO: change to screen resolution
 	self.timers = {}
 	self.timers[0.75] = ClockTimer(0.75);
 	self.minimized = false;
@@ -97,7 +103,9 @@ function Window:draw()
 	end
 
 	-- Setup the stencil
-	self:resetStencil();
+	--self:resetStencil();
+
+	OLITHEN_GUI.stencil_stack:push(self:full_box());
 
 	-- Draw the main box
 	if not self.minimized then
@@ -107,6 +115,11 @@ function Window:draw()
 		-- draw all the window's elements
 		self:draw_elements();
 	end
+
+	OLITHEN_GUI.stencil_stack:pop();
+	--self:resetStencil();
+
+	OLITHEN_GUI.stencil_stack:push(self:full_box());
 
 	-- Draw the title bar
 	self:draw_title();
@@ -127,6 +140,8 @@ function Window:draw()
 		love.graphics.rectangle("fill", self:minimize_box());
 	end
 
+	OLITHEN_GUI.stencil_stack:pop();
+
 	love.graphics.setStencilTest()
 end
 
@@ -137,17 +152,22 @@ end
 ]]
 
 function Window:draw_elements()
-	love.graphics.setCanvas({self.inner_canvas,stencil=true});
+	--love.graphics.setCanvas({self.inner_canvas,stencil=true});
 
-		love.graphics.clear();
+		--love.graphics.clear();
 
+	love.graphics.push()
+		love.graphics.translate(self.x, self.y+16);
 		for i, v in r_ipairs(self.children) do
+			OLITHEN_GUI.stencil_stack:push(v:full_box());	
 			v:propagate_event_reverse("draw");
+			OLITHEN_GUI.stencil_stack:pop();
 		end
+	love.graphics.pop()
 
-	love.graphics.setCanvas();
+	--love.graphics.setCanvas();
 
-	love.graphics.draw(self.inner_canvas, self.x, self.y+16);
+	--love.graphics.draw(self.inner_canvas, self.x, self.y+16);
 end
 
 function Window:draw_title()

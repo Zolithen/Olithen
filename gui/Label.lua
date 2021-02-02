@@ -16,17 +16,8 @@ function Label:init(parent, name)
 end
 
 function Label:draw()
-	self:stencil()
 	sk_set_color("font");
 	love.graphics.print(self.text, self.x, self.y);
-end
-
-function Label:stencil()
-	love.graphics.stencil(function()
-    	love.graphics.rectangle("fill", self:full_box());
-    end, "replace", 1)
-
-    love.graphics.setStencilTest("greater", 0);
 end
 
 function Label:full_box()
