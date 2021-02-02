@@ -90,6 +90,7 @@ function Window:propagate_event_reverse(name, ...)
 end
 
 function Window:draw()
+	print("   ");
 	-- Draw the focus outline
 	if self.focus then
 		love.graphics.setColor(0, 1, 0, 1);
@@ -105,7 +106,7 @@ function Window:draw()
 	-- Setup the stencil
 	--self:resetStencil();
 
-	OLITHEN_GUI.stencil_stack:push(self:full_box());
+	OLITHEN_GUI.stencil_stack:push(self:main_box());
 
 	-- Draw the main box
 	if not self.minimized then
@@ -116,6 +117,7 @@ function Window:draw()
 		self:draw_elements();
 	end
 
+	--print("finished drawing every elemetn");
 	OLITHEN_GUI.stencil_stack:pop();
 	--self:resetStencil();
 
@@ -140,7 +142,7 @@ function Window:draw()
 		love.graphics.rectangle("fill", self:minimize_box());
 	end
 
-	OLITHEN_GUI.stencil_stack:pop();
+	OLITHEN_GUI.stencil_stack:clear();
 
 	love.graphics.setStencilTest()
 end
@@ -161,6 +163,7 @@ function Window:draw_elements()
 		for i, v in r_ipairs(self.children) do
 			OLITHEN_GUI.stencil_stack:push(v:full_box());	
 			v:propagate_event_reverse("draw");
+			--print("end draw element");
 			OLITHEN_GUI.stencil_stack:pop();
 		end
 	love.graphics.pop()
@@ -216,20 +219,20 @@ function Window:update(dt)
 end
 
 function Window:mousepressed(x, y, b)
-	if is_hovered(self:title_box()) and self.movable and self.parent:is_on_window(x, y) == self.child_index then
+	if self.movable and is_hovered(self:title_box()) and self.parent:is_on_window(x, y) == self.child_index then
 		self.moving = true;
 		local xx, yy = self:title_box();
 		self.mox = x - xx;
 		self.moy = y - yy;
 
-	elseif is_hovered(self:expand_box()) and self.expandable and self.parent:is_on_window(x, y) == self.child_index and not self.minimized then
+	elseif self.expandable and is_hovered(self:expand_box()) and self.parent:is_on_window(x, y) == self.child_index and not self.minimized then
 		self.expanding = true;
 		local xx, yy = self:expand_box();
 		self.mox = 20 - (x - xx);
 		self.moy = 20 - (y - yy);
 		self.expanding_switch:switch();
 
-	elseif is_hovered(self:full_box()) and self.focusable and self.parent:is_on_window(x, y) == self.child_index and not self.minimized then
+	elseif self.focusable and is_hovered(self:full_box()) and self.parent:is_on_window(x, y) == self.child_index and not self.minimized then
 		self.parent:focus(self.child_index);
 	end
 
@@ -252,10 +255,10 @@ function Window:mousereleased(x, y, b)
 	self.moving = false;
 	self.expanding = false;
 
-	if is_hovered(self:close_box()) and self.closable and self.parent:is_on_window(x, y) == self.child_index then
+	if self.closable and is_hovered(self:close_box()) and self.parent:is_on_window(x, y) == self.child_index then
 		table.remove(self.parent.children, self.child_index)
 		self.parent:ensure_order();
-	elseif is_hovered(self:minimize_box()) and self.minimizable and self.parent:is_on_window(x, y) == self.child_index then
+	elseif self.minimizable and is_hovered(self:minimize_box()) and self.parent:is_on_window(x, y) == self.child_index then
 		self.minimized  = not self.minimized;
 	elseif self.child_index == 1 and not self.minimized then
 		for i, v in ipairs(self.children) do

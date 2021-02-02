@@ -25,7 +25,7 @@ lk = love.keyboard
 local scene = Node(nil, "scene", 0, 0)
 
 winc = WindowController(scene);
-m = Window(winc, "Main Menu"):setPos(0, 0):setDimensions(300, 500);
+--[[m = Window(winc, "Main Menu"):setPos(0, 0):setDimensions(300, 500);
 --m.expandable = false;
 m.closable = false;
 
@@ -35,7 +35,7 @@ end)
 
 Button(m, "bu1"):setPos(0, 0.5):setText("Open Window"):onClick(function(self)
 	
-end)
+end)]]
 --Label(m, "labT", 0, 0, "Saved");
 
 function love.load()

@@ -14,6 +14,7 @@ function StencilStack:push(x, y, w, h)
 	if self.stack[1] then -- TODO: this may not be suitable for panels
 		xx = x + self.stack[1].x;
 		yy = y + self.stack[1].y;
+		print(xx, yy, w, h);
 		table.insert(self.stack, {x=xx, y=yy, w=w, h=h});
 	else
 		table.insert(self.stack, {x=x, y=y, w=w, h=h});
@@ -22,7 +23,10 @@ function StencilStack:push(x, y, w, h)
 end
 
 function StencilStack:pop()
-	self.stack[#self.stack] = nil;
+	--self.stack[#self.stack] = nil;
+	print("before", #self.stack)
+	table.remove(self.stack, #self.stack)
+	print("after", #self.stack)
 	self:apply();
 end
 
@@ -36,10 +40,8 @@ function StencilStack:apply()
 	if #self.stack > 1 then
 		for i, v in ipairs(self.stack) do
 			if res_rect == nil then
-				print("Applying ", v.x, v.y, v.w, v.h);
 				res_rect = v;
 			else
-				print("Applying ", v.x, v.y, v.w, v.h);
 				res_rect = math.get_rectangle_intersection(res_rect, v);
 			end
 		end
@@ -53,7 +55,6 @@ function StencilStack:apply()
 			res_rect.x = res_rect.x - self.stack[1].x;
 			res_rect.y = res_rect.y - self.stack[1].y;
 		end
-		print(res_rect.x, res_rect.y, res_rect.w, res_rect.h);
 		love.graphics.stencil(function()
     		love.graphics.rectangle("fill", res_rect.x, res_rect.y, res_rect.w, res_rect.h);
     	end, "replace", 1)
