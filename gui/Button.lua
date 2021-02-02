@@ -20,7 +20,6 @@ function Button:init(parent, name)
 end
 
 function Button:draw()
-	self:stencil()
 	if self.hovered then
 		sk_set_color("highlight")
 	else

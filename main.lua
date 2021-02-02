@@ -25,17 +25,17 @@ lk = love.keyboard
 local scene = Node(nil, "scene", 0, 0)
 
 winc = WindowController(scene);
---[[m = Window(winc, "Main Menu"):setPos(0, 0):setDimensions(300, 500);
-m.expandable = false;
-m.closable = false;]]
+m = Window(winc, "Main Menu"):setPos(0, 0):setDimensions(300, 500);
+--m.expandable = false;
+m.closable = false;
 
---[[Button(m, "new_project"):setPos(0, 0.9):setText("New Project"):onClick(function(self)
+Button(m, "new_project"):setPos(0, 0.9):setText("New Project"):onClick(function(self)
 	local newp = Window(winc, "Untitled")
 end)
 
 Button(m, "bu1"):setPos(0, 0.5):setText("Open Window"):onClick(function(self)
 	
-end)]]
+end)
 --Label(m, "labT", 0, 0, "Saved");
 
 function love.load()
