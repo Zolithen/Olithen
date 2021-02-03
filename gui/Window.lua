@@ -69,6 +69,9 @@ function Window:init(parent, name)
 	self.title_bar = true;
 	self.closable = true;
 	self.minimizable = true;
+
+	self.title_bar_height = 16; -- only used for calculations (not for drawing the title bar) 
+	self.uuid = math.uuid();
 end
 
 -- TODO : Optimize this from "propagate_event(name)" to designed functions for each event that needs something special
@@ -118,14 +121,14 @@ function Window:draw()
 
 	-- Draw the main box
 	if not self.minimized then
-		OLITHEN_GUI.stencil_stack:push(self:full_box());
+		OLITHEN_GUI.stencil_stack:push(self:stencil_box());
 
 		OLITHEN_GUI.color("background");
 		love.graphics.rectangle("fill", self:full_box());
 
 		OLITHEN_GUI.stencil_stack:pop();
 
-		OLITHEN_GUI.stencil_stack:push(0, 0, self.w, self.h);
+		OLITHEN_GUI.stencil_stack:push(0, 0, self.w-2, self.h-2, self.uuid);
 
 		-- draw all the window's elements
 		love.graphics.push();
@@ -136,7 +139,7 @@ function Window:draw()
 		OLITHEN_GUI.stencil_stack:pop();
 	end
 
-	OLITHEN_GUI.stencil_stack:push(self:full_box());
+	OLITHEN_GUI.stencil_stack:push(self:stencil_box());
 
 	-- Draw the title bar
 	self:draw_title();
@@ -170,7 +173,7 @@ end
 
 function Window:draw_elements()
 	for i, v in r_ipairs(self.children) do
-		OLITHEN_GUI.stencil_stack:push(v:full_box());	
+		OLITHEN_GUI.stencil_stack:push(v:stencil_box());	
 		v:propagate_event_reverse("draw");
 		OLITHEN_GUI.stencil_stack:pop();
 	end
@@ -241,7 +244,7 @@ function Window:mousepressed(x, y, b)
 	-- update children
 	if self.child_index == 1 and not self.minimized then
 		for i, v in ipairs(self.children) do
-			v:propagate_event("mousepressed", x-self.x, y-self.y-16, b);
+			v:propagate_event("mousepressed", x-self.x, y-self.y-self.title_bar_height, b);
 		end
 	end
 end
@@ -264,7 +267,7 @@ function Window:mousereleased(x, y, b)
 		self.minimized  = not self.minimized;
 	elseif self.child_index == 1 and not self.minimized then
 		for i, v in ipairs(self.children) do
-			v:propagate_event("mousereleased", x-self.x, y-self.y-16, b);
+			v:propagate_event("mousereleased", x-self.x, y-self.y-self.title_bar_height, b);
 		end
 	end
 end
@@ -272,7 +275,7 @@ end
 function Window:mousemoved(x, y, dx, dy)
 	if self.child_index == 1 then
 		for i, v in ipairs(self.children) do
-			v:propagate_event("mousemoved", x-self.x, y-self.y-16, dx, dy);
+			v:propagate_event("mousemoved", x-self.x, y-self.y-self.title_bar_height, dx, dy);
 		end
 	end
 end
@@ -319,6 +322,10 @@ end
 
 function Window:outline_title_box()
 	return self.x-2, self.y-2, self.w+4, 20
+end
+
+function Window:stencil_box()
+	return self.x, self.y, self.w, self.h+16, self.uuid
 end
 
 --------------------------------

@@ -42,6 +42,10 @@ function Button:full_box()
 	return self.x, self.y, self.render_text:getWidth()+self.padding*2, self.render_text:getHeight()+self.padding*2
 end
 
+function Button:stencil_box()
+	return self.x, self.y, self.render_text:getWidth()+self.padding*2, self.render_text:getHeight()+self.padding*2, self.uuid
+end
+
 function Button:update_text(t)
 	self.text = t;
 	self.render_text = love.graphics.newText(love.graphics.getFont(), t); 
@@ -52,7 +56,7 @@ function Button:mousepressed(x, y, b)
 end
 
 function Button:mousereleased(x, y, b)
-	if is_hovered_raw(x, y, self:full_box()) and b == 1 then
+	if b == 1 and OLITHEN_GUI.is_inside_stencil(self, x, y) then
 		if self.on_click then
 			self:on_click();
 		end
@@ -60,7 +64,7 @@ function Button:mousereleased(x, y, b)
 end
 
 function Button:mousemoved(x, y)
-	self.hovered = is_hovered_raw(x, y, self:full_box());
+	self.hovered = OLITHEN_GUI.is_inside_stencil(self, x, y);
 end
 
 function Button:update_pos()

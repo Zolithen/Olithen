@@ -4,11 +4,12 @@ StencilStack = class("StencilStack")
 
 function StencilStack:init()
 	self.stack = {}
-	self.res_rect = {x = 0, y = 0, w = 0, h = 0};
+	self.res_rect = {x = 0, y = 0, w = 0, h = 0, uuid = ""};
+	self.stencils = {};
 end
 
 -- TODO : FIX THIS HSIT
-function StencilStack:push(x, y, w, h)
+function StencilStack:push(x, y, w, h, uuid)
 	--print("Added rectangle: ", x, y, w, h);
 	--x, y = love.graphics.inverseTransformPoint(x, y);
 	--local xx, yy
@@ -19,8 +20,8 @@ function StencilStack:push(x, y, w, h)
 	--	yy = y + dy;
 	--	table.insert(self.stack, {x=xx, y=yy, w=w, h=h});
 	--else
-	print("Pushing: ", x, y, w, h);
-		table.insert(self.stack, {x=x, y=y, w=w, h=h});
+	--print("Pushing: ", x, y, w, h);
+		table.insert(self.stack, {x=x, y=y, w=w, h=h, uuid=uuid});
 	--end	
 	self:apply();
 end
@@ -61,11 +62,13 @@ DB_RECTS = {}
 
 function StencilStack:apply()
 	local res_rect = nil;
+	local tx, ty = 0, 0;
+	local uuid = ""
 
 	if #self.stack > 1 then
 		for i, v in ipairs(self.stack) do
 			if res_rect == nil then
-				res_rect = v;
+				res_rect = table.copy(v);
 			else
 				
 				local r = table.copy(v);
@@ -74,8 +77,13 @@ function StencilStack:apply()
 				--r.x, r.y = v.x+xx, v.y+yy
 				--print(i, r.x, r.y);
 				if type(res_rect) == "table" then
+					tx, ty = tx-res_rect.x, ty-res_rect.y;
+					uuid = v.uuid
+					--print(v.uuid);
+
 					res_rect.x = 0;
 					res_rect.y = 0;
+
 				end
 
 				res_rect = math.get_rectangle_intersection(res_rect, r);
@@ -89,9 +97,11 @@ function StencilStack:apply()
 
 	if type(res_rect) == "table" then
 		table.insert(DB_RECTS, res_rect);
+		res_rect.tx = tx;
+		res_rect.ty = ty;
 	end
 
-	if res_rect == nil then res_rect = {x=0,y=0,w=1920,h=1080}; end
+	if res_rect == nil then res_rect = {x=0,y=0,w=1920,h=1080,tx=0,ty=0}; end
 	if type(res_rect) == "table" then
 		--[[if #self.stack > 1 then
 			local dx, dy = self:getDeviation();
@@ -106,6 +116,11 @@ function StencilStack:apply()
     		love.graphics.rectangle("fill", res_rect.x, res_rect.y, res_rect.w, res_rect.h);
     	end, "replace", 1)
     	love.graphics.setStencilTest("greater", 0);
+
+
     	self.res_rect = res_rect;
+    	if uuid then
+    		self.stencils[uuid] = table.copy(res_rect);
+    	end
 	end
 end

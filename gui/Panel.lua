@@ -21,13 +21,15 @@ function Panel:init(parent, name)
 
 	self.child_index = 1; -- this variable right here is to just mimic window state when able to propagate events
 
+	self.title_bar_height = 0;
+
 	--self.inner_canvas = love.graphics.newCanvas(1920, 1080);
 end
 
 function Panel:draw()
 	
 	OLITHEN_GUI.stencil_stack:pop();
-	OLITHEN_GUI.stencil_stack:push(self:outline_box());
+	OLITHEN_GUI.stencil_stack:push(self:stencil_outline_box());
 
 	OLITHEN_GUI.color("focused")
 	love.graphics.rectangle("fill", self:outline_box());
@@ -55,9 +57,18 @@ function Panel:full_box()
 	return self.x, self.y, self.w, self.h
 end
 
+function Panel:stencil_box()
+	return self.x, self.y, self.w, self.h, self.uuid
+end
+
 function Panel:outline_box()
 	return self.x-2, self.y-2, self.w+4, self.h+4
 end
+
+function Panel:stencil_outline_box()
+	return self.x-2, self.y-2, self.w+4, self.h+4, self.uuid
+end
+
 
 ------------------------------------
 -- API FUNCTIONS

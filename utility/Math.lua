@@ -54,3 +54,12 @@ function table.copy(obj, seen)
   for k, v in pairs(obj) do res[table.copy(k, s)] = table.copy(v, s) end
   return res
 end
+
+function math.uuid(sed)
+    local template ='xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'
+    local st = string.gsub(template, '[xy]', function (c)
+        local v = (c == 'x') and math.random(0, 0xf) or math.random(8, 0xb)
+        return string.format('%x', v)
+    end)
+    return st
+end

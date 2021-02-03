@@ -4,6 +4,7 @@ function GuiElement:init(parent, name, x, y)
 	Node.init(self, parent, name, x, y);
 
 	self.relative_pos = OLITHEN_GUI.relative_position;
+	self.uuid = math.uuid();
 end
 
 function GuiElement:setPos(x, y)

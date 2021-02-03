@@ -7,9 +7,10 @@ require "utility/StencilStack"
 OLITHEN_GUI = {
 	relative_position = true,
 	stencil_stack = StencilStack(),
-	is_inside_stencil = function(x, y)
-		return math.pboverlapraw(x, y,
-			OLITHEN_GUI.stencil_stack.res_rect.x, OLITHEN_GUI.stencil_stack.res_rect.y, OLITHEN_GUI.stencil_stack.res_rect.w, OLITHEN_GUI.stencil_stack.res_rect.h) 
+	is_inside_stencil = function(e, x, y)
+		local st = OLITHEN_GUI.stencil_stack.stencils[e.uuid]
+		return st and math.pboverlapraw(x, y,
+			st.x, st.y, st.w, st.h) 
 	end,
 	skfont = love.graphics.getFont(),
 	skcolors = {

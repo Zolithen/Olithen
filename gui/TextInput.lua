@@ -3,12 +3,14 @@ TextInput = GuiElement:extend("TextInput");
 -- TODO : Add text scrolling
 
 function TextInput:init(parent, name)
-	Node.init(self, parent, name, 0, 0);
+	GuiElement.init(self, parent, name, 0, 0);
 	self.text = {}; -- array of chars that represents an string
 	self.cursor = 1; -- position of writing cursor
 	self.cursor_switch = Switch(); -- for the blinking cursor
 	self.h = 16;
 	self.render_text = love.graphics.newText(love.graphics.getFont(), ""); -- text used for rendering
+
+	print(self.uuid);
 
 	self.focus = false; -- if the text field is focused
 
@@ -33,7 +35,7 @@ function TextInput:draw()
 	-- Setup the stencil
 	--self:stencil();
     --love.graphics.setStencilTest("greater", 0);
-    print("drawing text input");
+    --print("drawing text input");
 		if self.focus then
 			OLITHEN_GUI.color("highlight");
 		else
@@ -98,7 +100,7 @@ function TextInput:keypressed(k)
 end
 
 function TextInput:mousepressed(x, y, b)
-	self.focus = is_hovered_raw(x, y, self:main_box()) and b == 1;
+	self.focus = OLITHEN_GUI.is_inside_stencil(self, x, y) and b == 1;
 end
 
 function TextInput:get_text(untill)
@@ -122,11 +124,14 @@ function TextInput:main_box()
 	return self.x, self.y, self.w, 16
 end
 
+function TextInput:stencil_box()
+	return self.x, self.y, self.w, 16, self.uuid
+end
+
 function TextInput:update_pos()
 	self.x, self.y = self.pos:get_pixel_space(self.parent.w, self.parent.h);
 end
 
-TextInput.full_box = TextInput.main_box
 
 ------------------------------------
 -- API FUNCTIONS

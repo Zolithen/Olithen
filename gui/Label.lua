@@ -25,6 +25,10 @@ function Label:full_box()
 	return self.x, self.y, self.render_text:getWidth(), self.render_text:getHeight()
 end
 
+function Label:stencil_box()
+	return self.x, self.y, self.render_text:getWidth(), self.render_text:getHeight(), self.uuid
+end
+
 function Label:update_text(t)
 	self.text = t;
 	self.render_text = love.graphics.newText(love.graphics.getFont(), t); 
