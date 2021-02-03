@@ -1,22 +1,10 @@
+math.randomseed(os.time());
+
 love.graphics.setDefaultFilter("nearest", "nearest");
 
 require "tree"
 
-skcolors = {
-	font = {1,1,1,1},
-	highlight = {0.5, 0.5, 0.5, 1},
-	default = {0.3, 0.3, 0.3, 1}
 
-}
-skfont = love.graphics.getFont();
-
-function sk_set_color(n)
-	love.graphics.setColor(skcolors[n]);
-end
-
-function sk_getc_width(a)
-	return skfont:getWidth(a);
-end
 
 require "gui/Gui"
 
@@ -43,12 +31,19 @@ function love.load()
 end
 
 function love.update(dt)
-	--l.text = tostring(m.timers[0.75].should_trigger)
 	scene:propagate_event_reverse("update", dt)
 end
 
 function love.draw()
+	DB_RECTS = {}
 	scene:propagate_event_reverse("draw")
+	--love.graphics.clear()
+	for i, v in ipairs(DB_RECTS) do
+		DB_COLOR();
+		--print(i, v.x, v.y, v.w, v.h);
+		love.graphics.rectangle("fill", v.x, v.y, v.w, v.h);
+	end
+	DB_INDEX = 1
 end
 
 function love.keypressed(k)
@@ -67,8 +62,8 @@ function love.mousereleased(mx, my, b)
 	scene:propagate_event("mousereleased", mx, my, b);
 end
 
-function love.mousemoved(mx, my)
-	scene:propagate_event("mousemoved", mx, my);
+function love.mousemoved(mx, my, dx, dy)
+	scene:propagate_event("mousemoved", mx, my, dx, dy);
 end
 
 function love.textinput(t)

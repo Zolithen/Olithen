@@ -21,12 +21,12 @@ end
 
 function Button:draw()
 	if self.hovered then
-		sk_set_color("highlight")
+		OLITHEN_GUI.color("highlight")
 	else
-		sk_set_color("default")		
+		OLITHEN_GUI.color("default")		
 	end
 	love.graphics.rectangle("fill", self:full_box());
-	sk_set_color("font");
+	OLITHEN_GUI.color("font");
 	love.graphics.print(self.text, self.x+self.padding, self.y+self.padding);
 end
 

@@ -7,32 +7,57 @@ function StencilStack:init()
 	self.res_rect = {x = 0, y = 0, w = 0, h = 0};
 end
 
+-- TODO : FIX THIS HSIT
 function StencilStack:push(x, y, w, h)
 	--print("Added rectangle: ", x, y, w, h);
 	--x, y = love.graphics.inverseTransformPoint(x, y);
-	local xx, yy
-	if self.stack[1] then -- TODO: this may not be suitable for panels
-		xx = x + self.stack[1].x;
-		yy = y + self.stack[1].y;
-		print(xx, yy, w, h);
-		table.insert(self.stack, {x=xx, y=yy, w=w, h=h});
-	else
+	--local xx, yy
+	--if self.stack[1] then -- TODO: this may not be suitable for panels
+	--	local dx, dy = self:getDeviation();
+		--local dx, dy = 0, 0;
+	--	xx = x + dx;
+	--	yy = y + dy;
+	--	table.insert(self.stack, {x=xx, y=yy, w=w, h=h});
+	--else
+	print("Pushing: ", x, y, w, h);
 		table.insert(self.stack, {x=x, y=y, w=w, h=h});
-	end	
+	--end	
 	self:apply();
 end
 
+function StencilStack:getDeviation(A)
+	local xx, yy = 0, 0
+	for i = 2, A do
+		xx = xx + self.stack[i].x
+		yy = yy + self.stack[i].y
+	end
+	return xx, yy
+end
+
 function StencilStack:pop()
+	--print("uwu");
 	--self.stack[#self.stack] = nil;
-	print("before", #self.stack)
 	table.remove(self.stack, #self.stack)
-	print("after", #self.stack)
-	self:apply();
+	--self:apply();
 end
 
 function StencilStack:clear()
 	self.stack = {};
 end
+
+DB_COLORS = {}
+for i = 1, 1000 do
+	DB_COLORS[i] = {math.random(), math.random(), math.random(), 0.5}
+end
+DB_INDEX = 1
+
+function DB_COLOR()
+	DB_INDEX = DB_INDEX + 1;
+	love.graphics.setColor(DB_COLORS[DB_INDEX]);
+end
+
+DB_RECTS = {}
+
 
 function StencilStack:apply()
 	local res_rect = nil;
@@ -42,19 +67,41 @@ function StencilStack:apply()
 			if res_rect == nil then
 				res_rect = v;
 			else
-				res_rect = math.get_rectangle_intersection(res_rect, v);
+				
+				local r = table.copy(v);
+				local xx, yy = self:getDeviation(i-1);
+
+				--r.x, r.y = v.x+xx, v.y+yy
+				--print(i, r.x, r.y);
+				if type(res_rect) == "table" then
+					res_rect.x = 0;
+					res_rect.y = 0;
+				end
+
+				res_rect = math.get_rectangle_intersection(res_rect, r);
 			end
+
+			
 		end
 	elseif #self.stack == 1 then
 		res_rect = self.stack[1];
 	end
 
+	if type(res_rect) == "table" then
+		table.insert(DB_RECTS, res_rect);
+	end
+
 	if res_rect == nil then res_rect = {x=0,y=0,w=1920,h=1080}; end
 	if type(res_rect) == "table" then
-		if #self.stack > 1 then
-			res_rect.x = res_rect.x - self.stack[1].x;
-			res_rect.y = res_rect.y - self.stack[1].y;
-		end
+		--[[if #self.stack > 1 then
+			local dx, dy = self:getDeviation();
+			res_rect.x = res_rect.x + dx;
+			res_rect.y = res_rect.y + dy;
+		end]]
+		love.graphics.setStencilTest();
+
+			--table.insert(DB_RECTS, res_rect);
+		--print("Applying stencil at: ", res_rect.x, res_rect.y, res_rect.w, res_rect.h);
 		love.graphics.stencil(function()
     		love.graphics.rectangle("fill", res_rect.x, res_rect.y, res_rect.w, res_rect.h);
     	end, "replace", 1)
@@ -62,25 +109,3 @@ function StencilStack:apply()
     	self.res_rect = res_rect;
 	end
 end
-
---[[
-function Window:stencil()
-	love.graphics.stencil(function()
-    	love.graphics.rectangle("fill", self:full_box());
-    end, "replace", 1)
-end
-]]
---[[
-
-rect = {
-  left: x1,
-  right: x1 + x2,
-  top: y1,
-  bottom: y1 + y2,
-}
-
-
-x_overlap = Math.max(0, Math.min(rect1.right, rect2.right) - Math.max(rect1.left, rect2.left));
-y_overlap = Math.max(0, Math.min(rect1.bottom, rect2.bottom) - Math.max(rect1.top, rect2.top));
-overlapArea = x_overlap * y_overlap;
-]]

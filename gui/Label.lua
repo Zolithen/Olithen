@@ -16,7 +16,8 @@ function Label:init(parent, name)
 end
 
 function Label:draw()
-	sk_set_color("font");
+	--print("Drawing label at: ", self:full_box());
+	OLITHEN_GUI.color("font");
 	love.graphics.print(self.text, self.x, self.y);
 end
 

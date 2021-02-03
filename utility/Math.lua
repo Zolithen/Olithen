@@ -9,10 +9,13 @@ function math.get_rectangle_intersection(r1, r2, fallback)
 	rect.w = math.min(r1.x+r1.w,r2.x+r2.w) - rect.x;
 	rect.h = math.min(r1.y+r1.h,r2.y+r2.h) - rect.y;
   if rect.w >= 0 and rect.h >= 0 then
+    --print("overlapped");
 	 return rect;
 	elseif not fallback then
+    --print("fell back");
 		return math.get_rectangle_intersection(r2, r1, true)
 	end
+ -- print("not overlapped");
 
 	return false;
 end
@@ -38,4 +41,16 @@ function is_hovered_raw(x, y, ...)
       x, y,
       ...
     )
+end
+
+function math.clamp(low, n, high) return math.min(math.max(n, low), high) end
+
+function table.copy(obj, seen)
+  if type(obj) ~= 'table' then return obj end
+  if seen and seen[obj] then return seen[obj] end
+  local s = seen or {}
+  local res = setmetatable({}, getmetatable(obj))
+  s[obj] = res
+  for k, v in pairs(obj) do res[table.copy(k, s)] = table.copy(v, s) end
+  return res
 end

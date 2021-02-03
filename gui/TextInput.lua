@@ -25,7 +25,7 @@ function TextInput:init(parent, name)
 end
 
 function TextInput:update(dt)
-	--self.render_text_offset = math.max(0, (self.cursor*sk_getc_width("w"))-200);
+	--self.render_text_offset = math.max(0, (self.cursor*OLITHEN_GUI.text.width("w"))-200);
 	if self.focus and self.parent.timers[0.75]:check() then self.cursor_switch:switch() end
 end
 
@@ -33,11 +33,11 @@ function TextInput:draw()
 	-- Setup the stencil
 	--self:stencil();
     --love.graphics.setStencilTest("greater", 0);
-
+    print("drawing text input");
 		if self.focus then
-			sk_set_color("highlight");
+			OLITHEN_GUI.color("highlight");
 		else
-			sk_set_color("default");
+			OLITHEN_GUI.color("default");
 		end
 		love.graphics.rectangle("fill", 
 			self.x, 
@@ -46,21 +46,21 @@ function TextInput:draw()
 			16
 		);
 	
-		sk_set_color("font");
-		if OLITHEN_GUI.is_inside_stencil(self.x+1, self.y+1) then
+		OLITHEN_GUI.color("font");
+		--if OLITHEN_GUI.is_inside_stencil(self.x+1, self.y+1) then
 			love.graphics.draw(self.render_text, self.x+self:get_offset(), self.y);
-		end
+		--end
 
 		if -self.cursor_switch and self.focus then
-			love.graphics.rectangle("fill", self.x+sk_getc_width(self:get_text(self.cursor-1))+self:get_offset(), self.y, 3, 16);
+			love.graphics.rectangle("fill", self.x+OLITHEN_GUI.text.width(self:get_text(self.cursor-1))+self:get_offset(), self.y, 3, 16);
 		end
 end
 
 function TextInput:get_offset()
-	local st = sk_getc_width("putoputo")
+	local st = OLITHEN_GUI.text.width("putoputo")
 	return self.w-st-math.max(
     		self.w-st,
-    		sk_getc_width(self:get_text(self.cursor-1))
+    		OLITHEN_GUI.text.width(self:get_text(self.cursor-1))
     	)
 end
 
