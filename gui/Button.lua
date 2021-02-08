@@ -21,12 +21,12 @@ end
 
 function Button:draw()
 	if self.hovered then
-		sk_set_color("highlight")
+		OLITHEN_GUI.color("highlight")
 	else
-		sk_set_color("default")		
+		OLITHEN_GUI.color("default")		
 	end
 	love.graphics.rectangle("fill", self:full_box());
-	sk_set_color("font");
+	OLITHEN_GUI.color("font");
 	love.graphics.print(self.text, self.x+self.padding, self.y+self.padding);
 end
 
@@ -42,6 +42,10 @@ function Button:full_box()
 	return self.x, self.y, self.render_text:getWidth()+self.padding*2, self.render_text:getHeight()+self.padding*2
 end
 
+function Button:stencil_box()
+	return self.x, self.y, self.render_text:getWidth()+self.padding*2, self.render_text:getHeight()+self.padding*2, self.uuid
+end
+
 function Button:update_text(t)
 	self.text = t;
 	self.render_text = love.graphics.newText(love.graphics.getFont(), t); 
@@ -52,7 +56,7 @@ function Button:mousepressed(x, y, b)
 end
 
 function Button:mousereleased(x, y, b)
-	if is_hovered_raw(x, y, self:full_box()) and b == 1 then
+	if b == 1 and OLITHEN_GUI.is_inside_stencil(self, x, y) then
 		if self.on_click then
 			self:on_click();
 		end
@@ -60,7 +64,7 @@ function Button:mousereleased(x, y, b)
 end
 
 function Button:mousemoved(x, y)
-	self.hovered = is_hovered_raw(x, y, self:full_box());
+	self.hovered = OLITHEN_GUI.is_inside_stencil(self, x, y);
 end
 
 function Button:update_pos()

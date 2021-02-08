@@ -54,14 +54,14 @@ Node.children = {};
 
 -- TODO : change this function cus this code is unlicensed although its a gist
 --https://gist.github.com/jrus/3197011
-local random = math.random
+--[[local random = math.random
 local function uuid()
     local template ='xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'
     return string.gsub(template, '[xy]', function (c)
         local v = (c == 'x') and random(0, 0xf) or random(8, 0xb)
         return string.format('%x', v)
     end)
-end
+end]]
 
 -- Initialize a node:
 -- parent : Node -> The parent this node belongs to.
@@ -73,8 +73,7 @@ function Node:init(parent, name, x, y)
 	self.parent = parent;
 	self.name = name;
 	self.childs = -1;
-	self.uuid = uuid(); -- Creates an unique identifier for this node
-	math.randomseed(os.time()) -- Makes identifiers even more random
+	--self.uuid = uuid(); -- Creates an unique identifier for this node
 	
 
 	self:count_child(); -- Sincerely no idea 

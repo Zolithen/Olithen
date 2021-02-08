@@ -3,12 +3,14 @@ TextInput = GuiElement:extend("TextInput");
 -- TODO : Add text scrolling
 
 function TextInput:init(parent, name)
-	Node.init(self, parent, name, 0, 0);
+	GuiElement.init(self, parent, name, 0, 0);
 	self.text = {}; -- array of chars that represents an string
 	self.cursor = 1; -- position of writing cursor
 	self.cursor_switch = Switch(); -- for the blinking cursor
 	self.h = 16;
 	self.render_text = love.graphics.newText(love.graphics.getFont(), ""); -- text used for rendering
+
+	print(self.uuid);
 
 	self.focus = false; -- if the text field is focused
 
@@ -25,7 +27,7 @@ function TextInput:init(parent, name)
 end
 
 function TextInput:update(dt)
-	--self.render_text_offset = math.max(0, (self.cursor*sk_getc_width("w"))-200);
+	--self.render_text_offset = math.max(0, (self.cursor*OLITHEN_GUI.text.width("w"))-200);
 	if self.focus and self.parent.timers[0.75]:check() then self.cursor_switch:switch() end
 end
 
@@ -33,11 +35,11 @@ function TextInput:draw()
 	-- Setup the stencil
 	--self:stencil();
     --love.graphics.setStencilTest("greater", 0);
-
+    --print("drawing text input");
 		if self.focus then
-			sk_set_color("highlight");
+			OLITHEN_GUI.color("highlight");
 		else
-			sk_set_color("default");
+			OLITHEN_GUI.color("default");
 		end
 		love.graphics.rectangle("fill", 
 			self.x, 
@@ -46,21 +48,21 @@ function TextInput:draw()
 			16
 		);
 	
-		sk_set_color("font");
-		if OLITHEN_GUI.is_inside_stencil(self.x+1, self.y+1) then
+		OLITHEN_GUI.color("font");
+		--if OLITHEN_GUI.is_inside_stencil(self.x+1, self.y+1) then
 			love.graphics.draw(self.render_text, self.x+self:get_offset(), self.y);
-		end
+		--end
 
 		if -self.cursor_switch and self.focus then
-			love.graphics.rectangle("fill", self.x+sk_getc_width(self:get_text(self.cursor-1))+self:get_offset(), self.y, 3, 16);
+			love.graphics.rectangle("fill", self.x+OLITHEN_GUI.text.width(self:get_text(self.cursor-1))+self:get_offset(), self.y, 3, 16);
 		end
 end
 
 function TextInput:get_offset()
-	local st = sk_getc_width("putoputo")
+	local st = OLITHEN_GUI.text.width("putoputo")
 	return self.w-st-math.max(
     		self.w-st,
-    		sk_getc_width(self:get_text(self.cursor-1))
+    		OLITHEN_GUI.text.width(self:get_text(self.cursor-1))
     	)
 end
 
@@ -98,7 +100,7 @@ function TextInput:keypressed(k)
 end
 
 function TextInput:mousepressed(x, y, b)
-	self.focus = is_hovered_raw(x, y, self:main_box()) and b == 1;
+	self.focus = OLITHEN_GUI.is_inside_stencil(self, x, y) and b == 1;
 end
 
 function TextInput:get_text(untill)
@@ -122,11 +124,14 @@ function TextInput:main_box()
 	return self.x, self.y, self.w, 16
 end
 
+function TextInput:stencil_box()
+	return self.x, self.y, self.w, 16, self.uuid
+end
+
 function TextInput:update_pos()
 	self.x, self.y = self.pos:get_pixel_space(self.parent.w, self.parent.h);
 end
 
-TextInput.full_box = TextInput.main_box
 
 ------------------------------------
 -- API FUNCTIONS

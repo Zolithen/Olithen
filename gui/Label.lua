@@ -16,12 +16,17 @@ function Label:init(parent, name)
 end
 
 function Label:draw()
-	sk_set_color("font");
+	--print("Drawing label at: ", self:full_box());
+	OLITHEN_GUI.color("font");
 	love.graphics.print(self.text, self.x, self.y);
 end
 
 function Label:full_box()
 	return self.x, self.y, self.render_text:getWidth(), self.render_text:getHeight()
+end
+
+function Label:stencil_box()
+	return self.x, self.y, self.render_text:getWidth(), self.render_text:getHeight(), self.uuid
 end
 
 function Label:update_text(t)
