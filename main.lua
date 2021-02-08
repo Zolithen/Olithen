@@ -22,9 +22,6 @@ function love.update(dt)
 	scene:propagate_event_reverse("update", dt)
 end
 
---DB_X = 0;
---DB_Y = 0;
-
 function love.draw()
 	--DB_RECTS = {}
 	scene:propagate_event_reverse("draw")
