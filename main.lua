@@ -22,23 +22,23 @@ function love.update(dt)
 	scene:propagate_event_reverse("update", dt)
 end
 
-DB_X = 0;
-DB_Y = 0;
+--DB_X = 0;
+--DB_Y = 0;
 
 function love.draw()
-	DB_RECTS = {}
+	--DB_RECTS = {}
 	scene:propagate_event_reverse("draw")
 	--love.graphics.clear()
-	for i, v in ipairs(DB_RECTS) do
+	--[[for i, v in ipairs(DB_RECTS) do
 		DB_COLOR();
 		--print(i, v.x, v.y, v.w, v.h);
 		love.graphics.rectangle("fill", v.x, v.y, v.w, v.h);
 	end
-	DB_COLOR();
+	DB_COLOR();]]
 	--[[if OLITHEN_GUI.stencil_stack.res_rect.tx then
 		--love.graphics.circle("fill", DB_X, DB_Y, 100);
 	end]]
-	DB_INDEX = 1
+	--DB_INDEX = 1
 end
 
 function love.keypressed(k)

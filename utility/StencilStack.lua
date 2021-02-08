@@ -23,7 +23,7 @@ function StencilStack:clear()
 	self.stack = {};
 end
 
-DB_COLORS = {}
+--[[DB_COLORS = {}
 for i = 1, 1000 do
 	DB_COLORS[i] = {math.random(), math.random(), math.random(), 0.5}
 end
@@ -34,7 +34,7 @@ function DB_COLOR()
 	love.graphics.setColor(DB_COLORS[DB_INDEX]);
 end
 
-DB_RECTS = {}
+DB_RECTS = {}]]
 
 -- find way so stencils get nested down so sub panels WORK
 function StencilStack:apply()
@@ -63,13 +63,6 @@ function StencilStack:apply()
 
 				end
 
-				if uuid == AAA then
-					local b = r;
-					print("1", b.x, b.y, b.w, b.h);
-					local b = res_rect;
-					print("2", b.x, b.y, b.w, b.h);
-				end
-
 				res_rect = math.get_rectangle_intersection(res_rect, r);
 				res_rect.uuid = uuid;
 			end
@@ -81,7 +74,7 @@ function StencilStack:apply()
 	end
 
 	if type(res_rect) == "table" then
-		table.insert(DB_RECTS, res_rect);
+		--table.insert(DB_RECTS, res_rect);
 		--res_rect.tx = tx;
 		--res_rect.ty = ty;
 	end

@@ -1,7 +1,5 @@
 Button = GuiElement:extend("Button");
 
-
-AAA = ""
 function Button:init(parent, name)
 	GuiElement.init(self, parent, name, 0, 0);
 	self:update_text("");
@@ -19,12 +17,9 @@ function Button:init(parent, name)
 
 	self.hovered = false;
 	self.padding = 5;
-
-	AAA = self.uuid;
 end
 
 function Button:draw()
-	print("button stencil is ", self.uuid);
 	if self.hovered then
 		OLITHEN_GUI.color("highlight")
 	else

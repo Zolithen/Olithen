@@ -43,7 +43,7 @@ function ScrollBar:mousepressed(x, y, b)
 	if OLITHEN_GUI.is_inside_stencil({uuid=self.scroll_box_uuid}, x, y) and b == 1 then
 		self.scrolling = true;
 
-		print(x, y, self.x, self.y);
+		--print(x, y, self.x, self.y);
 		self.mox = x - (self.x+self.scrolled_x);
 		self.moy = y - (self.y+self.scrolled_y);
 	end
