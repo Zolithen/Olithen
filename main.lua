@@ -13,18 +13,6 @@ lk = love.keyboard
 local scene = Node(nil, "scene", 0, 0)
 
 winc = WindowController(scene);
---[[m = Window(winc, "Main Menu"):setPos(0, 0):setDimensions(300, 500);
---m.expandable = false;
-m.closable = false;
-
-Button(m, "new_project"):setPos(0, 0.9):setText("New Project"):onClick(function(self)
-	local newp = Window(winc, "Untitled")
-end)
-
-Button(m, "bu1"):setPos(0, 0.5):setText("Open Window"):onClick(function(self)
-	
-end)]]
---Label(m, "labT", 0, 0, "Saved");
 
 function love.load()
 	love.keyboard.setKeyRepeat(true);
@@ -44,12 +32,12 @@ function love.draw()
 	for i, v in ipairs(DB_RECTS) do
 		DB_COLOR();
 		--print(i, v.x, v.y, v.w, v.h);
-		--love.graphics.rectangle("fill", v.x, v.y, v.w, v.h);
+		love.graphics.rectangle("fill", v.x, v.y, v.w, v.h);
 	end
 	DB_COLOR();
-	if OLITHEN_GUI.stencil_stack.res_rect.tx then
+	--[[if OLITHEN_GUI.stencil_stack.res_rect.tx then
 		--love.graphics.circle("fill", DB_X, DB_Y, 100);
-	end
+	end]]
 	DB_INDEX = 1
 end
 

@@ -17,7 +17,7 @@ function math.get_rectangle_intersection(r1, r2, fallback)
 	end
  -- print("not overlapped");
 
-	return false;
+	return {x=0,y=0,w=0,h=0};
 end
 
 function math.pboverlapraw(x1, y1, x2, y2, w, h) 

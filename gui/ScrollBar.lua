@@ -31,6 +31,10 @@ function ScrollBar:mousemoved(x, y, dx, dy)
 	if self.scrolling then
 		self.scrolled_x = math.clamp(0, (x - self.x) - self.mox, self.w-16);
 		self.scrolled_y = math.clamp(0, (y - self.y) - self.moy, self.h-16);
+
+		if self.on_change then
+			self.on_change(self)
+		end
 	end
 end
 
@@ -73,5 +77,10 @@ end
 function ScrollBar:setDimensions(w, h)
 	self.w = w;
 	self.h = h or 16;
+	return self;
+end
+
+function ScrollBar:callOnChange(f)
+	self.on_change = f;
 	return self;
 end

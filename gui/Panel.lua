@@ -1,5 +1,7 @@
 Panel = GuiElement:extend("Panel");
 
+-- TODO : For scrolling with an scroll bar move every element instead of translating the fucking view port
+
 -- TODO : this doesn't propagate events properly cus this is a panel. or maybe it does. idk
 Panel.propagate_event = Window.propagate_event
 Panel.propagate_origin_change = Window.propagate_origin_change
@@ -22,6 +24,8 @@ function Panel:init(parent, name)
 	self.child_index = 1; -- this variable right here is to just mimic window state when able to propagate events
 
 	self.title_bar_height = 0;
+	self.translate_y = 0;
+	self.translate_x = 0;
 
 	--self.inner_canvas = love.graphics.newCanvas(1920, 1080);
 end
@@ -58,7 +62,7 @@ function Panel:full_box()
 end
 
 function Panel:stencil_box()
-	return self.x, self.y, self.w, self.h, self.uuid
+	return self.x, self.y, self.w, self.h, self.uuid, self.translate_x, self.translate_y
 end
 
 function Panel:outline_box()

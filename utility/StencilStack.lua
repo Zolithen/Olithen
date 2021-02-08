@@ -2,44 +2,21 @@
 
 StencilStack = class("StencilStack")
 
+-- fix stencil
 function StencilStack:init()
 	self.stack = {}
 	self.res_rect = {x = 0, y = 0, w = 0, h = 0, uuid = ""};
 	self.stencils = {};
 end
 
--- TODO : FIX THIS HSIT
-function StencilStack:push(x, y, w, h, uuid)
-	--print("Added rectangle: ", x, y, w, h);
-	--x, y = love.graphics.inverseTransformPoint(x, y);
-	--local xx, yy
-	--if self.stack[1] then -- TODO: this may not be suitable for panels
-	--	local dx, dy = self:getDeviation();
-		--local dx, dy = 0, 0;
-	--	xx = x + dx;
-	--	yy = y + dy;
-	--	table.insert(self.stack, {x=xx, y=yy, w=w, h=h});
-	--else
-	--print("Pushing: ", x, y, w, h);
-		table.insert(self.stack, {x=x, y=y, w=w, h=h, uuid=uuid});
-	--end	
+function StencilStack:push(x, y, w, h, uuid, tx, ty)
+	table.insert(self.stack, {x=x, y=y, w=w, h=h, uuid=uuid, tx=tx, ty=ty});
 	self:apply();
 end
 
-function StencilStack:getDeviation(A)
-	local xx, yy = 0, 0
-	for i = 2, A do
-		xx = xx + self.stack[i].x
-		yy = yy + self.stack[i].y
-	end
-	return xx, yy
-end
-
 function StencilStack:pop()
-	--print("uwu");
-	--self.stack[#self.stack] = nil;
 	table.remove(self.stack, #self.stack)
-	--self:apply();
+	self:apply();
 end
 
 function StencilStack:clear()
@@ -59,10 +36,10 @@ end
 
 DB_RECTS = {}
 
-
+-- find way so stencils get nested down so sub panels WORK
 function StencilStack:apply()
 	local res_rect = nil;
-	local tx, ty = 0, 0;
+	--local tx, ty = 0, 0;
 	local uuid = ""
 
 	if #self.stack > 1 then
@@ -72,21 +49,29 @@ function StencilStack:apply()
 			else
 				
 				local r = table.copy(v);
-				local xx, yy = self:getDeviation(i-1);
 
-				--r.x, r.y = v.x+xx, v.y+yy
-				--print(i, r.x, r.y);
+				uuid = r.uuid
 				if type(res_rect) == "table" then
-					tx, ty = tx-res_rect.x, ty-res_rect.y;
-					uuid = v.uuid
-					--print(v.uuid);
+
+					--[[if res_rect.tx then
+						res_rect.x = res_rect.tx;
+						res_rect.y = res_rect.ty;
+					end]]
 
 					res_rect.x = 0;
 					res_rect.y = 0;
 
 				end
 
+				if uuid == AAA then
+					local b = r;
+					print("1", b.x, b.y, b.w, b.h);
+					local b = res_rect;
+					print("2", b.x, b.y, b.w, b.h);
+				end
+
 				res_rect = math.get_rectangle_intersection(res_rect, r);
+				res_rect.uuid = uuid;
 			end
 
 			
@@ -97,21 +82,14 @@ function StencilStack:apply()
 
 	if type(res_rect) == "table" then
 		table.insert(DB_RECTS, res_rect);
-		res_rect.tx = tx;
-		res_rect.ty = ty;
+		--res_rect.tx = tx;
+		--res_rect.ty = ty;
 	end
 
 	if res_rect == nil then res_rect = {x=0,y=0,w=1920,h=1080,tx=0,ty=0}; end
 	if type(res_rect) == "table" then
-		--[[if #self.stack > 1 then
-			local dx, dy = self:getDeviation();
-			res_rect.x = res_rect.x + dx;
-			res_rect.y = res_rect.y + dy;
-		end]]
 		love.graphics.setStencilTest();
 
-			--table.insert(DB_RECTS, res_rect);
-		--print("Applying stencil at: ", res_rect.x, res_rect.y, res_rect.w, res_rect.h);
 		love.graphics.stencil(function()
     		love.graphics.rectangle("fill", res_rect.x, res_rect.y, res_rect.w, res_rect.h);
     	end, "replace", 1)

@@ -51,6 +51,8 @@ function Window:init(parent, name)
 	self.timers = {}
 	self.timers[0.75] = ClockTimer(0.75);
 	self.minimized = false;
+	self.translate_x = 0;
+	self.translate_y = 16;
 
 	-- vars for moving the windows
 	self.moving = false;
@@ -132,7 +134,7 @@ function Window:draw()
 
 		-- draw all the window's elements
 		love.graphics.push();
-			love.graphics.translate(self.x, self.y+16);
+			love.graphics.translate(self.x, self.y+self.translate_y);
 			self:draw_elements();
 		love.graphics.pop();
 
@@ -177,6 +179,14 @@ function Window:draw_elements()
 		v:propagate_event_reverse("draw");
 		OLITHEN_GUI.stencil_stack:pop();
 	end
+
+	--[[print("STARTING STENCIL THINGY \n ");
+
+	for i, v in pairs(OLITHEN_GUI.stencil_stack.stencils) do
+		print(i, v.x, v.y, v.w, v.h);
+	end
+
+	print("\nENDING STENCIL THINGY");]]
 end
 
 function Window:draw_title()
