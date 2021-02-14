@@ -117,6 +117,10 @@ end
 function TextInput:update_render_text(untill)
 	local s = self:get_text(untill or nil);
 	self.render_text = love.graphics.newText(love.graphics.getFont(), s);
+
+	if self.on_change then
+		self:on_change()
+	end
 end
 
 -- Defines some areas in the text box
@@ -138,5 +142,10 @@ end
 ------------------------------------
 function TextInput:setWidth(w)
 	self.w = w;
+	return self;
+end
+
+function TextInput:onChange(f)
+	self.on_change = f;
 	return self;
 end

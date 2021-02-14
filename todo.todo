@@ -2,5 +2,13 @@
 Add standard GUI elements (ex list)
 GUI Skin
 CODE CLEANUP
+Implement relative positioning properly
 
 - Panel GUI element -
+Nested panels
+
+- Button GUI element -
+setDimensions
+
+- TextInput GUI element -
+Call the on_change text thingy when the text actually gets changed
